@@ -1,91 +1,57 @@
 #!/bin/bash
 
-LOG_DIR='/var/log/'
-WWW_DIR='/usr/share/shweb/html'
-ERROR_DIR='/usr/share/shweb/error'
-
-ERR_XCD=86
-ERR_NOTROOT=87
-
-
-buildRespBody() {
-    echo "<html><head><link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'></head><body style='font-family: monospace; font-size: 32px;'><p>Hello Shweb</p></body></html>"
-}
-
-# respond
-# params:
-#   $1 - content-type (String)
-#   $2 - body         (String)
 respond() {
     echo "HTTP/1.1 200 OK"
     echo "Connection: close"
-    echo "Content-Type: $1; charset=utf-8"
-    echo "Content-Length: ${#2}"
-    echo 'Link: </favicon.ico>; rel="icon"'
-    echo "Host: featen.com"
+    echo "Content-Type: $contentType; charset=utf-8"
+    echo "Content-Length: ${#body}"
+    echo "Host: $host"
     echo "Date: $(TZ=UTC; date '+%a, %d %b %Y %T GMT')"
-    echo -e "\n$2"
-}
-
-500_error() {
-    cat ${ERROR_DIR}/500 >&2
-}
-
-permRedirect() {
-    echo 'HTTP/1.1 301 Moved Permanently'
-    echo 'Location: http://featen.com/'
-}
-
-gotoDir() {
-    cd $WWW_DIR || {
-        500_error
-            exit $ERR_XCD;
-        }
+    echo -e "\n$body"
 }
 
 read -r request
+read method path protocol < <(echo $request)
+if [ "$method" != 'GET' ]; then
+    echo 'HTTP/1.1 405 Method Not Allowed'
+    echo -e "\n405 Method Not Allowed"
+    exit 0
+fi
+path="${path%%\?*}"
+
+case "$path" in
+    *.html) contentType='text/html' ;;
+    *.jpg|*.jpeg) contentType='image/jpeg' ;;
+    *.png) contentType='image/png' ;;
+    *.ico) contentType='image/x-icon' ;;
+    *.js) contentType='application/x-javascript' ;;
+    *) contentType='application/octet-stream';;
+esac
 
 while :
 do
     read -r header
-    [ "$header" == $'\r' ] && break
+    [[ "${header[0]}" == $'\r' || "${header[0]}" == $'\n' ]] && break
+    case "$header" in
+        Host:*) read ok host < <(echo $header) ;;
+        *)  : ;;
+    esac
 done
 
+case "$host" in 
+    *) rootDir='/var/share/html/default' ;;
+esac
 
-# parse url & path
-url="${request#GET }"
-url="${url% HTTP/*}"
-path="${url%%\?*}"
-query="${url#*\?}"
-if [[ "$path" == "$query" ]]; then
-    query=''
-fi
-
-# parse it all
-altResp=false
-if [[ "$path" == '/index.html' || "$query" == 'type=html' ]]; then
-    type='html'
-    contentType='text/html'
-elif [[ "$path" == '/favicon' || "$path" == '/favicon.ico' ]]; then 
-    altResp=true
-    echo 'HTTP/1.1 200 OK'
-    echo -e "Content-Type: image/x-icon; charset=binary\n"
-    cat '/root/shweb/beeroclock/favicon.ico'
-    exit 0
-elif [[ "${#query}" -gt 9 ]]; then # Unsupported Content-Type
-    altResp=true
-    echo 'HTTP/1.1 415 Unsupported Media Type'
-    echo -e "\n415 Unsupported Media Type"
-    exit 0
-else # unknown route
-    altResp=true
-    permRedirect
+filePath="${rootDir}/${path}"
+if [[ -f "$filePath" ]]
+then
+    body=$(<$filePath)
+else
+    echo 'HTTP/1.1 404 Not Found'
+    echo -e "\n404 Not Found"
     exit 0
 fi
 
-# if no alternative response, respond
-if [[ "$altResp" == false ]]; then
-    body="$(buildRespBody)"
-    respond "$contentType" "$body"
-    exit 0
-fi
+respond 
+exit 0
+
