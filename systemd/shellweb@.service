@@ -1,0 +1,6 @@
+[Service]
+ExecStart=/home/jianjun/code/shellweb/http.sh
+User=jianjun
+Group=jianjun
+StandardInput=socket
+StandardOutput=socket

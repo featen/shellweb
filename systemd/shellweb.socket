@@ -1,0 +1,6 @@
+[Unit]
+Description=Shell Web Socket
+
+[Socket]
+ListenStream=0.0.0.0:8080
+Accept=yes
