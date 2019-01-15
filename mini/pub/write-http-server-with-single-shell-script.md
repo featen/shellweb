@@ -1,10 +1,10 @@
-# Write http server with single shell script
+## Write A HTTP Server with Single Shell Script
 
-## Is it useful and safe
+### Is it useful and safe
 No, not at all...
 
 
-## Then... why
+### Then... why
 In my opinion, the only 3 programming languages anyone would need forever is C, Shell and Golang.
 
 - You can do system programming in C.
@@ -15,5 +15,5 @@ But can we do something more than just system admin with shell scripts.
 
 Yes, we can.
 
-## What's behind
+### What's behind
 Shell is way more than you think, look deeper...
