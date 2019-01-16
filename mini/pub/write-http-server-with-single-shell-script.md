@@ -1,19 +1,24 @@
-## Write A HTTP Server with Single Shell Script
-
-### Is it useful and safe
-No, not at all...
+# Write A HTTP Server with Single Shell Script
 
 
-### Then... why
-In my opinion, the only 3 programming languages anyone would need forever is C, Shell and Golang.
+这个月我整整瘦了５斤．
 
-- You can do system programming in C.
-- System admin in Shell.
-- And everything else in Golang.
+主
+次
 
-But can we do something more than just system admin with shell scripts.
+逻辑：制造困难，解决困难
 
-Yes, we can.
+细节：字符串长度之谜
 
-### What's behind
-Shell is way more than you think, look deeper...
+乐：反转，谐音，
+
+深度
+
+
+
+讲故事
+练习练习练习
+xinetd
+systemd
+
+
