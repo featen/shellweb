@@ -38,7 +38,6 @@ main() {
     done
 
     case "$path" in
-        index.html      ) content_type='text/html'; type=index ;;
         *.html          ) content_type='text/html' ;;
         *.md            ) content_type='text/html'; type=markdown ;;
         *.jpg|*.jpeg    ) content_type='image/jpeg'; type=bin ;;
@@ -50,7 +49,7 @@ main() {
     esac
 
     case "$host" in 
-        *) root_dir="/home/jianjun/code/shellweb/mini" ;;
+        *) root_dir="/home/jianjun/code/shellweb/localhost" ;;
     esac
 
     file_path="${root_dir}/${path}"
@@ -66,12 +65,12 @@ main() {
                 exit 0
                 ;;
             markdown)
-                mk_body=$(markdown $file_path)
+                if hash markdown 2>/dev/null; then
+                    mk_body=$(markdown $file_path)
+                else
+                    mk_body='<pre>'$(<$file_path)'</pre>'
+                fi
                 body=$(<$file_header)${mk_body}$(<$file_footer)
-                Respond
-                ;;
-            index)
-                body=$(<$file_header)$(<$file_path)$(<$file_footer)
                 Respond
                 ;;
             *)
