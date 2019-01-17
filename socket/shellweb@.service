@@ -1,6 +1,6 @@
 [Service]
-ExecStart=/home/jianjun/code/shellweb/http.sh
-User=jianjun
-Group=jianjun
+ExecStart=/root/code/shellweb/http.sh
+User=featen
+Group=featen
 StandardInput=socket
 StandardOutput=socket

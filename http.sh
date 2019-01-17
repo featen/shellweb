@@ -1,5 +1,8 @@
 #!/bin/bash
 
+BASE_DIR='/root/shellweb'    # Must set to correct dir.
+MARKDOWN_BIN='markdown_py'   # Try to set your markdown interpreter.
+
 LANG=C
 LC_ALL=C
 
@@ -49,7 +52,7 @@ main() {
     esac
 
     case "$host" in 
-        *) root_dir="/home/jianjun/code/shellweb/localhost" ;;
+        *) root_dir="${BASE_DIR}/localhost" ;;
     esac
 
     file_path="${root_dir}/${path}"
@@ -65,8 +68,8 @@ main() {
                 exit 0
                 ;;
             markdown)
-                if hash markdown 2>/dev/null; then
-                    mk_body=$(markdown $file_path)
+                if hash $MARKDOWN_BIN 2>/dev/null; then
+                    mk_body=$($MARKDOWN_BIN $file_path)
                 else
                     mk_body='<pre>'$(<$file_path)'</pre>'
                 fi
