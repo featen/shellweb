@@ -8,6 +8,7 @@ HTTP协议虽然在接入层逐渐开始被HTTP2和QUIC取代，但在内部服�
 
 云哥说，机会永远藏在人们抱怨的地方。人们抱怨的声音越大，你就去解决问题，抱怨越多，机会越大。所以没有困难，制造困难也要上。
 
+
 ---
 ## Shell 脚本怎么处理网络包
 
@@ -17,13 +18,13 @@ HTTP协议虽然在接入层逐渐开始被HTTP2和QUIC取代，但在内部服�
 
 虽然说Bash等Shell可以通过/dev/tcp/ip/port虚拟文件来建立连接，发送和接受数据包，但可以说Bash本身是没有提供监听端口的功能的。
 
-所以用Shell脚本来实现HTTP服务器，还是需要借助一些别的socket服务工具来在用户态监听端口，再spawn脚本来处理HTTP协议的内容。子进程的0，1，2文件描述符，也就是标准输入，输出和错误，会由socket服务工具复制到对应的文件描诉符。
+所以用Shell脚本来实现HTTP服务器，还是需要借助一些别的socket服务工具来在用户态监听端口，再spawn脚本来处理HTTP协议的内容。子进程的0，1文件描述符，也就是标准输入和输出，会由socket服务工具复制到对应的文件描诉符。
 
 这里我提供了两种配置来处理Socket服务部分，xinetd和systemd，配置文件都在socket目录里。
 
 
 ---
-## 简单而愚蠢
+## 保持简单
 
 脚本代码只有不到100行，没有任何花哨的语法，符合现代美学，完全不需要任何解释。
 
@@ -33,8 +34,23 @@ HTTP协议虽然在接入层逐渐开始被HTTP2和QUIC取代，但在内部服�
 * localhost/pub里面是用markdown写的文章，md写起来就是爽。
 * 访问路径后缀名是md的，会看本机有没有markdown解释器，如果没有就是直接按md显示的。
 * 在pub里面增加了新的文章之后，需要手动修改index.html，这里是直接用html写的。
+
+
+---
+## 配置
+就像前面提到那样，你可以用xinetd或者systemd来部署这个服务
+
+* xinetd：
+  * 需要在xinetd.conf修改server指向脚本的位置，然后执行`./xinetd -f xinetd.conf -d` 
+* systemd：
+  * 修改shellweb.socket里面的监听地址
+  * shellweb@.service里的脚本路径
+  * 拷贝上述两个文件到/lib/systemd/system/
+  * 创建shellweb.socket软链接到/etc/systemd/system/sockets.target.wants/
+* 修改脚本里的BASE_DIR
+* 如果你的系统里面有markdown的解释器，修改脚本里的MARKDOWN_BIN
 * 可以试试直接执行本脚本： './http.sh /index.html'。
-* 必须修改root_dir的目录才可以正常工作。
+
 
 ---
 ## 坐标：山景城

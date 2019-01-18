@@ -1,7 +1,7 @@
 #!/bin/bash
 
-BASE_DIR='/root/shellweb'    # Must set to correct dir.
-MARKDOWN_BIN='markdown_py'   # Try to set your markdown interpreter.
+BASE_DIR='/home/jianjun/code/shellweb'    # Must set to correct dir.
+MARKDOWN_BIN='markdown'   # Try to set your markdown interpreter.
 
 LANG=C
 LC_ALL=C
