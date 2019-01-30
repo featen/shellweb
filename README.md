@@ -40,17 +40,20 @@ HTTP协议虽然在接入层逐渐开始被HTTP2和QUIC取代，但在内部服�
 
 ---
 ## 配置
-就像前面提到那样，你可以用xinetd或者systemd来部署这个服务
 
-* xinetd：
-  * 需要在xinetd.conf修改server指向脚本的位置，然后执行`./xinetd -f xinetd.conf -d` 
-* systemd：
-  * 修改shellweb.socket里面的监听地址
-  * shellweb@.service里的脚本路径
-  * 拷贝上述两个文件到/lib/systemd/system/
-  * 创建shellweb.socket软链接到/etc/systemd/system/sockets.target.wants/
 * 修改脚本里的BASE_DIR
 * 如果你的系统里面有markdown的解释器，修改脚本里的MARKDOWN_BIN
+* nc -l 80 -e ./http.sh -m 5 -k
+
+就像前面提到那样，你也可以用xinetd或者systemd来部署这个服务，注意BASE_DIR需要指定绝对路径。
+
+* xinetd：
+    - 需要在xinetd.conf修改server指向脚本的位置，然后执行`./xinetd -f xinetd.conf -d` 
+* systemd：
+    - 修改shellweb.socket里面的监听地址
+    - shellweb@.service里的脚本路径
+    - 拷贝上述两个文件到/lib/systemd/system/
+    - 创建shellweb.socket软链接到/etc/systemd/system/sockets.target.wants/
 * 可以试试直接执行本脚本： './http.sh /index.html'。
 
 
